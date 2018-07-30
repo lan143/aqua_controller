@@ -3,6 +3,8 @@
 
 #include <WiFi.h>
 
+#define RECONNECT_INTERVAL 120 * 1000
+
 class WifiService {
 public:
     WifiService(WiFiClass* wifi, HardwareSerial* serial);
@@ -22,7 +24,11 @@ protected:
 
     bool startClientMode(String* ssid, String* password);
     void startAPMode();
+
     void checkWifiStatus();
+    void reconnectToWifiIfNeeded();
+
+    unsigned long _lastReconnect = 0;
 };
 
 #endif

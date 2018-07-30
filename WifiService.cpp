@@ -24,6 +24,7 @@ void WifiService::init() {
 
 void WifiService::update() {
     checkWifiStatus();
+    reconnectToWifiIfNeeded();
 }
 
 bool WifiService::startClientMode(String* ssid, String* password) {
@@ -55,7 +56,7 @@ bool WifiService::startClientMode(String* ssid, String* password) {
         _serial->print("Connected to ");
         _serial->println(*ssid);
         _serial->print("IP address: ");
-        _serial->println(WiFi.localIP());
+        _serial->println(_wifi->localIP());
 
         _wifiLose = false;
 
@@ -94,7 +95,19 @@ void WifiService::checkWifiStatus()
         _wifiLose = true;
     } else if (WiFi.status() == WL_CONNECTED && _wifiLose) {
         _serial->println("Restored wifi connection");
+        _serial->print("IP address: ");
+        _serial->println(_wifi->localIP());
 
         _wifiLose = false;
+    }
+}
+
+void WifiService::reconnectToWifiIfNeeded() {
+    if (_wifiLose) {
+        if ((millis() - _lastReconnect) >= RECONNECT_INTERVAL) {
+            _serial->println("Trying reconnect to wifi access point.");
+            _wifi->reconnect();
+            _lastReconnect = millis();
+        }
     }
 }
