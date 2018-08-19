@@ -34,6 +34,7 @@
 #include "WifiService.h"
 #include "SerialService.h"
 #include "NTPClient.h"
+#include "WatchdogService.h"
 
 #define DHT_PIN 26
 #define RELAY_ONE_PIN 27
@@ -74,6 +75,8 @@ public:
 
     ClockService *getClockService() { return this->_clockService; };
 
+    WatchdogService *getWatchdogService() { return this->_watchdogService; }
+
 private:
     static AppService *_instance;
 
@@ -94,6 +97,7 @@ private:
     WifiService *_wifiService;
     SerialService *_serialService;
     ClockService *_clockService;
+    WatchdogService *_watchdogService;
 };
 
 #endif

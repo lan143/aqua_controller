@@ -22,22 +22,20 @@
  * SOFTWARE.
  */
 
-#ifndef _SERIAL_SERVICE_H_
-#define _SERIAL_SERVICE_H_
+#include "WatchdogService.h"
 
-#include <vector>
+void IRAM_ATTR resetModule() {
+    ets_printf("reboot\n");
+    esp_restart_noos();
+}
 
-class SerialService {
-public:
-    SerialService();
+void WatchdogService::init() {
+    _timer = timerBegin(0, 80, true);                  //timer 0, div 80
+    timerAttachInterrupt(_timer, &resetModule, true);  //attach callback
+    timerAlarmWrite(_timer, WATCHDOG_TIMEOUT * 1000, false); //set time in us
+    timerAlarmEnable(_timer);
+}
 
-    void update();
-
-private:
-    std::vector<String> readLine();
-
-    void resetSettings();
-    void setSettings(std::vector<String> data);
-};
-
-#endif
+void WatchdogService::update() {
+    timerWrite(_timer, 0); //reset timer (feed watchdog)
+}

@@ -22,22 +22,22 @@
  * SOFTWARE.
  */
 
-#ifndef _SERIAL_SERVICE_H_
-#define _SERIAL_SERVICE_H_
+#ifndef _WATCHDOG_SERVICE_H
+#define _WATCHDOG_SERVICE_H
 
-#include <vector>
+#include <esp32-hal-timer.h>
+#include <esp_system.h>
 
-class SerialService {
+#define WATCHDOG_TIMEOUT 8000
+
+class WatchdogService {
 public:
-    SerialService();
+    void init();
 
     void update();
 
 private:
-    std::vector<String> readLine();
-
-    void resetSettings();
-    void setSettings(std::vector<String> data);
+    hw_timer_t *_timer = NULL;
 };
 
-#endif
+#endif _WATCHDOGSERVICE_H

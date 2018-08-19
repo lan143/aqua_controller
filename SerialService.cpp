@@ -30,14 +30,22 @@ SerialService::SerialService() {
 }
 
 void SerialService::update() {
-    String command = readLine();
+    std::vector<String> line = readLine();
+    String command = (String)*line.begin();
 
     if (command != "") {
         App->getSerial()->print("Read command: ");
         App->getSerial()->println(command);
 
         if (command == "reset") {
-            resetSettings();
+            this->resetSettings();
+        } else if (command == "set") {
+            this->setSettings(line);
+        } else if (command == "restart") {
+            App->getSerial()->println("Restart...");
+
+            delay(2000);
+            ESP.restart();
         }
     }
 }
@@ -53,24 +61,44 @@ void SerialService::resetSettings() {
 
     prefs.end();
 
-    App->getSerial()->println("Complete. Reboot...");
+    App->getSerial()->println("Complete. Restart...");
 
     delay(2000);
     ESP.restart();
 }
 
-String SerialService::readLine() {
+void SerialService::setSettings(std::vector<String> data) {
+    App->getSerial()->println("Start set settings");
+
+    Preferences prefs;
+    prefs.begin("wifi", false);
+
+    if (data[1] == "ssid") {
+        prefs.putString("ssid", data[2]);
+    } else if (data[1] == "password") {
+        prefs.putString("password", data[2]);
+    }
+
+    prefs.end();
+    App->getSerial()->println("Complete.");
+}
+
+std::vector<String> SerialService::readLine() {
+    std::vector<String> out;
     String inString = "";
 
     while (App->getSerial()->available() > 0) {
         char inChar = App->getSerial()->read();
 
         if (inChar == '\n') {
-            return inString;
+            return out;
+        } else if (inChar == ' ') {
+            out.push_back(inString);
+            inString = "";
+        } else {
+            inString += inChar;
         }
-
-        inString += inChar;
     }
 
-    return inString;
+    return out;
 }

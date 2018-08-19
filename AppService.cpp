@@ -30,6 +30,9 @@ void AppService::init() {
     _serial = &Serial;
     _serial->begin(115200);
 
+    _watchdogService = new WatchdogService();
+    _watchdogService->init();
+
     _serialService = new SerialService();
 
     _dht = new DHT(DHT_PIN, DHT22);
@@ -56,6 +59,7 @@ void AppService::init() {
 }
 
 void AppService::update() {
+    this->getWatchdogService()->update();
     this->getSerialService()->update();
     this->getWifiService()->update();
     this->getClockService()->update();
