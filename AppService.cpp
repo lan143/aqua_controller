@@ -8,6 +8,8 @@ AppService::AppService(HardwareSerial* serial, WiFiClass* wifi) {
 void AppService::init() {
     _serial->begin(115200);
 
+    _serialService = new SerialService(_serial);
+
     _dht = new DHT(DHT_PIN, DHT22);
     _dht->begin();
 
@@ -16,11 +18,11 @@ void AppService::init() {
 
     _ntpUDP = new WiFiUDP();
 
-    _timeClient = new NTPClient(*_ntpUDP);
-    _timeClient->setTimeOffset(3 * 3600);
-    _timeClient->begin();
+    _ntpClient = new NTPClient(*_ntpUDP);
+    _ntpClient->setTimeOffset(3 * 3600);
+    _ntpClient->begin();
 
-    _timerService = new TimerService(_timeClient);
+    _timerService = new TimerService(_ntpClient);
 
     _restServer = new RestServer(_serial, _dht, _timerService);
     _restServer->init();
@@ -29,8 +31,9 @@ void AppService::init() {
 }
 
 void AppService::update() {
-    _timeClient->update();
+    _serialService->update();
     _wifiService->update();
+    _timerService->update();
 
     if (_timerService->checkIfEnableLight()) {
         _serial->println("Enabled");
@@ -39,8 +42,6 @@ void AppService::update() {
         _serial->println("Disabled");
         digitalWrite(RELAY_ONE_PIN, HIGH);
     }
-
-    _serial->println(_timeClient->getFormattedTime());
 
     delay(1000);
 }

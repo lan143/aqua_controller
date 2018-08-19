@@ -2,25 +2,25 @@
 #define _TIMER_H_
 
 #include <Preferences.h>
-#include <NTPClient.h>
+#include "ClockService.h"
 
 class TimerService {
 public:
-    TimerService(NTPClient *timeClient);
-
+    TimerService(NTPClient* ntpClient);
     ~TimerService();
 
     int32_t getStartHour();
-
     int32_t getEndHour();
 
     void setHours(int32_t start, int32_t end);
 
     bool checkIfEnableLight();
 
+    void update();
+
 protected:
-    Preferences *_prefs;
-    NTPClient *_timeClient;
+    Preferences* _preferences;
+    ClockService* _clockService;
 };
 
 #endif

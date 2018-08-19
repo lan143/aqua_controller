@@ -1,29 +1,34 @@
 #include "TimerService.h"
 
-TimerService::TimerService(NTPClient *timeClient) {
-    _prefs = new Preferences;
-    _prefs->begin("timer", false);
+TimerService::TimerService(NTPClient* ntpClient) {
+    this->_preferences = new Preferences;
+    this->_preferences->begin("timer", false);
 
-    _timeClient = timeClient;
+    this->_clockService = new ClockService(&Serial, ntpClient);
+    this->_clockService->init();
 }
 
 TimerService::~TimerService() {
-    _prefs->end();
+    this->_preferences->end();
+}
+
+void TimerService::update() {
+    this->_clockService->update();
 }
 
 int32_t TimerService::getStartHour() {
-    return _prefs->getInt("start", 9);
+    return this->_preferences->getInt("start", 9);
 }
 
 int32_t TimerService::getEndHour() {
-    return _prefs->getInt("end", 21);
+    return this->_preferences->getInt("end", 21);
 }
 
 void TimerService::setHours(int32_t start, int32_t end) {
-    _prefs->putInt("start", start);
-    _prefs->putInt("end", end);
+    this->_preferences->putInt("start", start);
+    this->_preferences->putInt("end", end);
 }
 
 bool TimerService::checkIfEnableLight() {
-    return _timeClient->getHours() >= getStartHour() && _timeClient->getHours() < getEndHour();
+    return this->_clockService->getHours() >= this->getStartHour() && this->_clockService->getHours() < this->getEndHour();
 }

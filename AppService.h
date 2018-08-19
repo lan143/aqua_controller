@@ -4,11 +4,12 @@
 #include <DHT.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>
-#include <NTPClient.h>
 
 #include "TimerService.h"
 #include "RestServer.h"
 #include "WifiService.h"
+#include "SerialService.h"
+#include "NTPClient.h"
 
 #define DHT_PIN 26
 #define RELAY_ONE_PIN 27
@@ -27,10 +28,11 @@ protected:
 
     DHT* _dht;
     WiFiUDP* _ntpUDP;
-    NTPClient* _timeClient;
+    NTPClient* _ntpClient;
     TimerService* _timerService;
     RestServer* _restServer;
     WifiService* _wifiService;
+    SerialService* _serialService;
 };
 
 #endif

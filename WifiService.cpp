@@ -8,18 +8,18 @@ WifiService::WifiService(WiFiClass* wifi, HardwareSerial* serial) {
 
 void WifiService::init() {
     Preferences prefs;
-    prefs.begin("wifi", true);
+    prefs.begin("wifi", false);
 
     String ssid = prefs.getString("ssid", "unknown");
     String password = prefs.getString("password", "unknown");
-
-    prefs.end();
 
     if (ssid != "unknown" && password != "unknown") {
         startClientMode(&ssid, &password);
     } else {
         startAPMode();
     }
+
+    prefs.end();
 }
 
 void WifiService::update() {
