@@ -1,11 +1,33 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2018 Kravchenko Artyom
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "AppService.h"
 #include "TimerService.h"
 
-TimerService::TimerService(NTPClient* ntpClient) {
+TimerService::TimerService() {
     this->_preferences = new Preferences;
     this->_preferences->begin("timer", false);
-
-    this->_clockService = new ClockService(&Serial, ntpClient);
-    this->_clockService->init();
 }
 
 TimerService::~TimerService() {
@@ -13,7 +35,6 @@ TimerService::~TimerService() {
 }
 
 void TimerService::update() {
-    this->_clockService->update();
 }
 
 int32_t TimerService::getStartHour() {
@@ -30,5 +51,5 @@ void TimerService::setHours(int32_t start, int32_t end) {
 }
 
 bool TimerService::checkIfEnableLight() {
-    return this->_clockService->getHours() >= this->getStartHour() && this->_clockService->getHours() < this->getEndHour();
+    return App->getClockService()->getHour() >= this->getStartHour() && App->getClockService()->getHour() < this->getEndHour();
 }

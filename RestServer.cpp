@@ -1,27 +1,49 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2018 Kravchenko Artyom
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #include <ArduinoJson.h>
 #include <DHT.h>
 #include <Preferences.h>
+#include "AppService.h"
 #include "RestServer.h"
 #include "TimerService.h"
 
-RestServer::RestServer(HardwareSerial* serial, DHT* dht, TimerService* timerService) {
+RestServer::RestServer() {
     _server = new AsyncWebServer(80);
-    _serial = serial;
-    _dht = dht;
-    _timerService = timerService;
 }
 
 void RestServer::init() {
-    _server->begin();
+    this->getServer()->begin();
 
-    _server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    this->getServer()->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
         request->send(200, "text/plain", "Hello World");
     });
 
-    _server->on("/temperature", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        this->_serial->println("GET: /temperature");
+    this->getServer()->on("/temperature", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        App->getSerial()->println("GET: /temperature");
 
-        float t = this->_dht->readTemperature();
+        float t = App->getDHT()->readTemperature();
 
         if (isnan(t)) {
             request->send(500, "application/json", "{\"message\":\"Failed to get temperature from sensor\"}");
@@ -32,10 +54,10 @@ void RestServer::init() {
         }
     });
 
-    _server->on("/humidity", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        this->_serial->println("GET: /humidity");
+    this->getServer()->on("/humidity", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        App->getSerial()->println("GET: /humidity");
 
-        float h = this->_dht->readHumidity();
+        float h = App->getDHT()->readHumidity();
 
         if (isnan(h)) {
             request->send(500, "application/json", "{\"message\":\"Failed to get humidity from sensor\"}");
@@ -46,8 +68,8 @@ void RestServer::init() {
         }
     });
 
-    _server->on("/settings", HTTP_POST, [this](AsyncWebServerRequest *request) {
-        this->_serial->println("POST: /settings");
+    this->getServer()->on("/settings", HTTP_POST, [this](AsyncWebServerRequest *request) {
+        App->getSerial()->println("POST: /settings");
 
         AsyncWebParameter* body = request->getParam("body", true);
 
@@ -73,8 +95,8 @@ void RestServer::init() {
         ESP.restart();
     });
 
-    _server->on("/settings/timer", HTTP_POST, [this](AsyncWebServerRequest *request) {
-        this->_serial->println("POST: /settings/timer");
+    this->getServer()->on("/settings/timer", HTTP_POST, [this](AsyncWebServerRequest *request) {
+        App->getSerial()->println("POST: /settings/timer");
 
         AsyncWebParameter* body = request->getParam("body", true);
 
@@ -86,7 +108,7 @@ void RestServer::init() {
             return;
         }
 
-        this->_timerService->setHours(jsonBody["start"], jsonBody["end"]);
+        App->getTimerService()->setHours(jsonBody["start"], jsonBody["end"]);
 
         request->send(200, "application/json", "{}");
 
