@@ -30,13 +30,12 @@ void AppService::init() {
     _serial = &Serial;
     _serial->begin(115200);
 
+    _settingsService = new SettingsService();
+
     _watchdogService = new WatchdogService();
     _watchdogService->init();
 
     _serialService = new SerialService();
-
-    _dht = new DHT(DHT_PIN, DHT22);
-    _dht->begin();
 
     _wifiService = new WifiService();
     _wifiService->init();
@@ -50,12 +49,22 @@ void AppService::init() {
     _clockService = new ClockService();
     _clockService->init();
 
-    _timerService = new TimerService();
+    _webServer = new WebServer();
+    _webServer->init();
 
-    _restServer = new RestServer();
-    _restServer->init();
+    _lightService = new LightService();
 
-    pinMode(RELAY_ONE_PIN, OUTPUT);
+    _heatingService = new HeatingService();
+
+    _aerationService = new AerationService();
+
+    _filterService = new FilterService();
+
+    _maintainTemperatureService = new MaintainTemperatureService();
+
+    _outerTemperatureService = new OuterTemperatureService();
+
+    _apiService = new ApiService();
 }
 
 void AppService::update() {
@@ -63,15 +72,11 @@ void AppService::update() {
     this->getSerialService()->update();
     this->getWifiService()->update();
     this->getClockService()->update();
-    this->getTimerService()->update();
-
-    if (this->getTimerService()->checkIfEnableLight()) {
-        this->getSerial()->println("Enabled");
-        digitalWrite(RELAY_ONE_PIN, LOW);
-    } else {
-        this->getSerial()->println("Disabled");
-        digitalWrite(RELAY_ONE_PIN, HIGH);
-    }
-
-    delay(2000);
+    this->getLightService()->update();
+    this->getHeatingService()->update();
+    this->getAerationService()->update();
+    this->getFilterService()->update();
+    this->getMaintainTemperatureService()->update();
+    this->getOuterTemperatureService()->update();
+    this->getApiService()->update();
 }

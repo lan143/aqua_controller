@@ -22,16 +22,24 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_KALMANFILTER_H
+#define AQUA_CONTROLLER_KALMANFILTER_H
 
-void setup(void)
-{
-    App->init();
-}
+class KalmanFilter {
+public:
+    KalmanFilter(float varVolt, float varProcess);
 
-void loop(void)
-{
-    App->update();
-}
+    float filter(float value);
+
+protected:
+    float _varVolt;
+    float _varProcess;
+    float _Pc = 0.0;
+    float _G = 0.0;
+    float _Pn = 1.0;
+    float _Xp = 0.0;
+    float _Zp = 0.0;
+    float _Xe = 0.0;
+};
+
+#endif //AQUA_CONTROLLER_KALMANFILTER_H

@@ -22,16 +22,25 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H
+#define AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H
 
-void setup(void)
-{
-    App->init();
-}
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include "Sensor.h"
+#include "KalmanFilter.h"
 
-void loop(void)
-{
-    App->update();
-}
+class MaintainTemperatureService : public Sensor {
+public:
+    MaintainTemperatureService();
+
+protected:
+    void internalUpdate();
+
+    KalmanFilter* _filter;
+    OneWire* _bus;
+    DallasTemperature* _sensors;
+    DeviceAddress _sensorAddress;
+};
+
+#endif //AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H

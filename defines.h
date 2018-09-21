@@ -22,16 +22,17 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_DEFINES_H
+#define AQUA_CONTROLLER_DEFINES_H
 
-void setup(void)
-{
-    App->init();
-}
+// Relays
+#define PIN_RELAY_LIGHT 27
+#define PIN_RELAY_HEATING 26
+#define PIN_RELAY_AERATION 25
+#define PIN_RELAY_FILTER 33
 
-void loop(void)
-{
-    App->update();
-}
+// Sensors
+#define PIN_MAINTAIN_TEMPERATURE 19
+#define PIN_OUTER_SENSOR 18
+
+#endif //AQUA_CONTROLLER_DEFINES_H

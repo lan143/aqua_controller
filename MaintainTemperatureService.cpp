@@ -22,16 +22,21 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
 #include "defines.h"
-#include "AppService.h"
+#include "MaintainTemperatureService.h"
 
-void setup(void)
-{
-    App->init();
+MaintainTemperatureService::MaintainTemperatureService() : Sensor(PIN_MAINTAIN_TEMPERATURE) {
+    this->_filter = new KalmanFilter(0.5, 0.05);
+
+    this->_bus = new OneWire(this->getPin());
+    this->_sensors = new DallasTemperature(this->_bus);
+
+    this->_sensors->begin();
 }
 
-void loop(void)
-{
-    App->update();
+void MaintainTemperatureService::internalUpdate() {
+    this->_sensors->requestTemperatures();
+    float val = this->_sensors->getTempCByIndex(0);
+    this->_value = this->_filter->filter(val);
 }
+

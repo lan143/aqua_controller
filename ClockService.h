@@ -35,7 +35,6 @@ public:
     void init();
     void update();
 
-    int getHour();
     DateTime getCurrentDateTime();
 
 private:
@@ -43,6 +42,8 @@ private:
     bool _rtcInited;
 
     RTC_DS3231* getRtc() { return this->_rtc; };
+
+    unsigned long _lastDisplayTime = 0;
 };
 
 #endif

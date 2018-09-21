@@ -22,16 +22,20 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
 #include "defines.h"
-#include "AppService.h"
+#include "OuterTemperatureService.h"
 
-void setup(void)
-{
-    App->init();
+OuterTemperatureService::OuterTemperatureService() : Sensor(PIN_OUTER_SENSOR) {
+    this->_filter = new KalmanFilter(0.5, 0.05);
+
+    this->_dht = new DHT(this->getPin(), DHT22);
+    this->_dht->begin();
 }
 
-void loop(void)
-{
-    App->update();
+void OuterTemperatureService::internalUpdate() {
+    float t = this->_dht->readTemperature();
+
+    if (!isnan(t)) {
+        this->_value = this->_filter->filter(t);
+    }
 }

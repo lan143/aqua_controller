@@ -22,16 +22,25 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
 #include "defines.h"
 #include "AppService.h"
+#include "AerationService.h"
 
-void setup(void)
-{
-    App->init();
+AerationService::AerationService() : RelayService(PIN_RELAY_AERATION) {
 }
 
-void loop(void)
-{
-    App->update();
+void AerationService::internalUpdate() {
+    int32_t mode = App->getSettingsService()->getHeatingMode();
+
+    if (mode == MODE_DISABLE) {
+        App->getSerial()->println("Aeration: Manual disabled");
+        this->disable();
+    } else if (mode == MODE_ENABLE) {
+        App->getSerial()->println("Aeration: Manual enabled");
+        this->enable();
+    } else if (mode == MODE_AUTO) {
+        // TODO: Implement some logic
+        App->getSerial()->println("Aeration: Auto enabled");
+        this->enable();
+    }
 }

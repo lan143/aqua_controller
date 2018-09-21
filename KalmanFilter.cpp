@@ -22,16 +22,20 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#include "KalmanFilter.h"
 
-void setup(void)
-{
-    App->init();
+KalmanFilter::KalmanFilter(float varVolt, float varProcess) {
+    this->_varVolt = varVolt;
+    this->_varProcess = varProcess;
 }
 
-void loop(void)
-{
-    App->update();
+float KalmanFilter::filter(float value) {
+    this->_Pc = this->_Pn + this->_varProcess;
+    this->_G = this->_Pc / (this->_Pc + this->_varVolt);
+    this->_Pn = (1 - this->_G) * this->_Pc;
+    this->_Xp = this->_Xe;
+    this->_Zp = this->_Xp;
+    this->_Xe = this->_G * (value - this->_Zp) + this->_Xp;
+
+    return this->_Xe;
 }

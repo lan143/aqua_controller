@@ -22,16 +22,22 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_APISERVICE_H
+#define AQUA_CONTROLLER_APISERVICE_H
 
-void setup(void)
-{
-    App->init();
-}
+class ApiService {
+public:
+    ApiService();
 
-void loop(void)
-{
-    App->update();
-}
+    void update();
+
+protected:
+    void internalUpdate();
+
+    void sendStats();
+    void updateSettings();
+
+    unsigned long _lastUpdateTime = 0;
+};
+
+#endif //AQUA_CONTROLLER_APISERVICE_H

@@ -22,16 +22,17 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_HEATINGSERVICE_H
+#define AQUA_CONTROLLER_HEATINGSERVICE_H
 
-void setup(void)
-{
-    App->init();
-}
+#include "RelayService.h"
 
-void loop(void)
-{
-    App->update();
-}
+class HeatingService : public RelayService {
+public:
+    HeatingService();
+
+protected:
+    void internalUpdate();
+};
+
+#endif //AQUA_CONTROLLER_HEATINGSERVICE_H

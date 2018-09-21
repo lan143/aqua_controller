@@ -25,19 +25,23 @@
 #ifndef _APP_SERVICE_H_
 #define _APP_SERVICE_H_
 
-#include <DHT.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
-#include "TimerService.h"
-#include "RestServer.h"
+#include "ClockService.h"
+#include "SettingsService.h"
+#include "WebServer.h"
 #include "WifiService.h"
 #include "SerialService.h"
 #include "NTPClient.h"
 #include "WatchdogService.h"
-
-#define DHT_PIN 26
-#define RELAY_ONE_PIN 27
+#include "LightService.h"
+#include "HeatingService.h"
+#include "AerationService.h"
+#include "FilterService.h"
+#include "MaintainTemperatureService.h"
+#include "OuterTemperatureService.h"
+#include "ApiService.h"
 
 #define App AppService::getInstance()
 
@@ -55,15 +59,11 @@ public:
 
     void update();
 
-    DHT *getDHT() { return this->_dht; };
-
     WiFiUDP *getNtpUDP() { return this->_ntpUDP; };
 
     NTPClient *getNtpClient() { return this->_ntpClient; };
 
-    TimerService *getTimerService() { return this->_timerService; };
-
-    RestServer *getRestServer() { return this->_restServer; };
+    WebServer *getWebServer() { return this->_webServer; };
 
     WifiService *getWifiService() { return this->_wifiService; };
 
@@ -77,6 +77,22 @@ public:
 
     WatchdogService *getWatchdogService() { return this->_watchdogService; }
 
+    SettingsService *getSettingsService() { return this->_settingsService; }
+
+    LightService *getLightService() { return this->_lightService; }
+
+    HeatingService *getHeatingService() { return this->_heatingService; }
+
+    AerationService *getAerationService() { return this->_aerationService; }
+
+    FilterService *getFilterService() { return this->_filterService; }
+
+    MaintainTemperatureService *getMaintainTemperatureService() { return this->_maintainTemperatureService; }
+
+    OuterTemperatureService *getOuterTemperatureService() { return this->_outerTemperatureService; }
+
+    ApiService *getApiService() { return this->_apiService; }
+
 private:
     static AppService *_instance;
 
@@ -89,15 +105,21 @@ private:
     HardwareSerial *_serial;
     WiFiClass *_wifi;
 
-    DHT *_dht;
     WiFiUDP *_ntpUDP;
     NTPClient *_ntpClient;
-    TimerService *_timerService;
-    RestServer *_restServer;
+    WebServer *_webServer;
     WifiService *_wifiService;
     SerialService *_serialService;
     ClockService *_clockService;
     WatchdogService *_watchdogService;
+    SettingsService *_settingsService;
+    LightService *_lightService;
+    HeatingService *_heatingService;
+    AerationService *_aerationService;
+    FilterService *_filterService;
+    MaintainTemperatureService *_maintainTemperatureService;
+    OuterTemperatureService *_outerTemperatureService;
+    ApiService *_apiService;
 };
 
 #endif

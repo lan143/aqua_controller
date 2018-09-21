@@ -22,16 +22,24 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_SENSOR_H
+#define AQUA_CONTROLLER_SENSOR_H
 
-void setup(void)
-{
-    App->init();
-}
+class Sensor {
+public:
+    Sensor(int pin);
 
-void loop(void)
-{
-    App->update();
-}
+    void update();
+
+    float getValue() { return this->_value; };
+
+protected:
+    virtual void internalUpdate() = 0;
+    int getPin() { return this->_pin; }
+
+    int _pin;
+    float _value;
+    unsigned long _lastUpdateTime = 0;
+};
+
+#endif //AQUA_CONTROLLER_SENSOR_H

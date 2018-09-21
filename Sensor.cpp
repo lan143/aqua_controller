@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
 #include "AppService.h"
+#include "Sensor.h"
 
-void setup(void)
-{
-    App->init();
+Sensor::Sensor(int pin) {
+    this->_pin = pin;
 }
 
-void loop(void)
-{
-    App->update();
+void Sensor::update() {
+    if ((millis() - this->_lastUpdateTime >= 2000) || this->_lastUpdateTime == 0) {
+        this->internalUpdate();
+        this->_lastUpdateTime = millis();
+    }
 }

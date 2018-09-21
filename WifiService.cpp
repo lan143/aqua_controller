@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-#include <Preferences.h>
 #include "AppService.h"
 #include "WifiService.h"
 
@@ -30,19 +29,14 @@ WifiService::WifiService() {
 }
 
 void WifiService::init() {
-    Preferences prefs;
-    prefs.begin("wifi", false);
-
-    String ssid = prefs.getString("ssid", "unknown");
-    String password = prefs.getString("password", "unknown");
+    String ssid = App->getSettingsService()->getWifiAPSSID();
+    String password = App->getSettingsService()->getWifiAPPassword();
 
     if (ssid != "unknown" && password != "unknown") {
         this->startClientMode(&ssid, &password);
     } else {
         this->startAPMode();
     }
-
-    prefs.end();
 }
 
 void WifiService::update() {

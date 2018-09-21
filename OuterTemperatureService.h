@@ -22,16 +22,22 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H
+#define AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H
 
-void setup(void)
-{
-    App->init();
-}
+#include <DHT.h>
+#include "Sensor.h"
+#include "KalmanFilter.h"
 
-void loop(void)
-{
-    App->update();
-}
+class OuterTemperatureService : public Sensor {
+public:
+    OuterTemperatureService();
+
+protected:
+    void internalUpdate();
+
+    KalmanFilter* _filter;
+    DHT *_dht;
+};
+
+#endif //AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H

@@ -22,28 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef _TIMER_H_
-#define _TIMER_H_
+#ifndef AQUA_CONTROLLER_AERATIONSERVICE_H
+#define AQUA_CONTROLLER_AERATIONSERVICE_H
 
-#include <Preferences.h>
-#include "ClockService.h"
+#include "RelayService.h"
 
-class TimerService {
+class AerationService : public RelayService {
 public:
-    TimerService();
-    ~TimerService();
-
-    int32_t getStartHour();
-    int32_t getEndHour();
-
-    void setHours(int32_t start, int32_t end);
-
-    bool checkIfEnableLight();
-
-    void update();
+    AerationService();
 
 protected:
-    Preferences* _preferences;
+    void internalUpdate();
 };
 
-#endif
+#endif //AQUA_CONTROLLER_AERATIONSERVICE_H

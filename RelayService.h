@@ -22,16 +22,25 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#ifndef AQUA_CONTROLLER_RELAYSERVICE_H
+#define AQUA_CONTROLLER_RELAYSERVICE_H
 
-void setup(void)
-{
-    App->init();
-}
+class RelayService {
+public:
+    RelayService(int pin);
 
-void loop(void)
-{
-    App->update();
-}
+    void update();
+    bool isEnabled() { this->_isEnabled; }
+
+protected:
+    virtual void internalUpdate() = 0;
+    int getPin() { return this->_pin; }
+    void enable();
+    void disable();
+
+    int _pin;
+    bool _isEnabled;
+    unsigned long _lastUpdateTime = 0;
+};
+
+#endif //AQUA_CONTROLLER_RELAYSERVICE_H

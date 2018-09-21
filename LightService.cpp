@@ -22,34 +22,34 @@
  * SOFTWARE.
  */
 
+#include "defines.h"
 #include "AppService.h"
-#include "TimerService.h"
+#include "LightService.h"
 
-TimerService::TimerService() {
-    this->_preferences = new Preferences;
-    this->_preferences->begin("timer", false);
+LightService::LightService() : RelayService(PIN_RELAY_LIGHT) {
 }
 
-TimerService::~TimerService() {
-    this->_preferences->end();
-}
+void LightService::internalUpdate() {
+    int32_t mode = App->getSettingsService()->getLightMode();
 
-void TimerService::update() {
-}
+    if (mode == MODE_DISABLE) {
+        App->getSerial()->println("Light: Manual disabled");
+        this->disable();
+    } else if (mode == MODE_ENABLE) {
+        App->getSerial()->println("Light: Manual enabled");
+        this->enable();
+    } else if (mode == MODE_AUTO) {
+        int32_t startTime = App->getSettingsService()->getStartLighting();
+        int32_t endTime = App->getSettingsService()->getEndLighting();
+        DateTime dateTime = App->getClockService()->getCurrentDateTime();
+        int32_t currentTime = dateTime.hour() * 100 + dateTime.minute();
 
-int32_t TimerService::getStartHour() {
-    return this->_preferences->getInt("start", 9);
-}
-
-int32_t TimerService::getEndHour() {
-    return this->_preferences->getInt("end", 21);
-}
-
-void TimerService::setHours(int32_t start, int32_t end) {
-    this->_preferences->putInt("start", start);
-    this->_preferences->putInt("end", end);
-}
-
-bool TimerService::checkIfEnableLight() {
-    return App->getClockService()->getHour() >= this->getStartHour() && App->getClockService()->getHour() < this->getEndHour();
+        if (startTime >= currentTime && currentTime <= endTime) {
+            App->getSerial()->println("Light: Auto enabled");
+            this->enable();
+        } else {
+            App->getSerial()->println("Light: Auto disabled");
+            this->disable();
+        }
+    }
 }

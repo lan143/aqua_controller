@@ -22,16 +22,20 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
+#include <ArduinoJson.h>
 #include "AppService.h"
+#include "WebServer.h"
+#include "SettingsService.h"
+#include "webpage.h"
 
-void setup(void)
-{
-    App->init();
+WebServer::WebServer() {
+    _server = new AsyncWebServer(80);
 }
 
-void loop(void)
-{
-    App->update();
+void WebServer::init() {
+    this->getServer()->begin();
+
+    this->getServer()->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        request->send_P(200, "text/html", index_html, processor);
+    });
 }

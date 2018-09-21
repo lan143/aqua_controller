@@ -22,16 +22,28 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
-#include "defines.h"
 #include "AppService.h"
+#include "RelayService.h"
 
-void setup(void)
-{
-    App->init();
+RelayService::RelayService(int pin) {
+    this->_pin = pin;
+
+    pinMode(this->getPin(), OUTPUT);
 }
 
-void loop(void)
-{
-    App->update();
+void RelayService::update() {
+    if ((millis() - this->_lastUpdateTime >= 2000) || this->_lastUpdateTime == 0) {
+        this->internalUpdate();
+        this->_lastUpdateTime = millis();
+    }
+}
+
+void RelayService::enable() {
+    this->_isEnabled = true;
+    digitalWrite(this->getPin(), LOW);
+}
+
+void RelayService::disable() {
+    this->_isEnabled = false;
+    digitalWrite(this->getPin(), HIGH);
 }

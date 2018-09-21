@@ -27,11 +27,10 @@
 
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include "TimerService.h"
 
-class RestServer {
+class WebServer {
 public:
-    RestServer();
+    WebServer();
 
     void init();
 

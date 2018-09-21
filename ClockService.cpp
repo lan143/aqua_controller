@@ -51,20 +51,24 @@ void ClockService::update() {
         this->getRtc()->adjust(DateTime(App->getNtpClient()->getEpochTime()));
     }
 
-    DateTime now = this->getCurrentDateTime();
+    if (this->_lastDisplayTime == 0 || millis() - this->_lastDisplayTime >= 1000) {
+        DateTime now = this->getCurrentDateTime();
 
-    App->getSerial()->print(now.year(), DEC);
-    App->getSerial()->print('/');
-    App->getSerial()->print(now.month(), DEC);
-    App->getSerial()->print('/');
-    App->getSerial()->print(now.day(), DEC);
-    App->getSerial()->print(" ");
-    App->getSerial()->print(now.hour(), DEC);
-    App->getSerial()->print(':');
-    App->getSerial()->print(now.minute(), DEC);
-    App->getSerial()->print(':');
-    App->getSerial()->print(now.second(), DEC);
-    App->getSerial()->println();
+        App->getSerial()->print(now.year(), DEC);
+        App->getSerial()->print('/');
+        App->getSerial()->print(now.month(), DEC);
+        App->getSerial()->print('/');
+        App->getSerial()->print(now.day(), DEC);
+        App->getSerial()->print(" ");
+        App->getSerial()->print(now.hour(), DEC);
+        App->getSerial()->print(':');
+        App->getSerial()->print(now.minute(), DEC);
+        App->getSerial()->print(':');
+        App->getSerial()->print(now.second(), DEC);
+        App->getSerial()->println();
+
+        this->_lastDisplayTime = millis();
+    }
 }
 
 DateTime ClockService::getCurrentDateTime() {
@@ -73,10 +77,4 @@ DateTime ClockService::getCurrentDateTime() {
     } else {
         return DateTime(App->getNtpClient()->getEpochTime());
     }
-}
-
-int ClockService::getHour() {
-    DateTime now = this->getCurrentDateTime();
-
-    return now.hour();
 }

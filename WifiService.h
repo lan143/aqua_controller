@@ -38,8 +38,8 @@ public:
     void update();
 
 protected:
-    const char* _ap_ssid = "lan143-aqua";
-    const char* _ap_password = "funfefsdjk";
+    const char* _ap_ssid = "aqua-controller";
+    const char* _ap_password = "1234567890";
 
     bool _wifiLose;
 

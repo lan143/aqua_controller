@@ -22,16 +22,25 @@
  * SOFTWARE.
  */
 
-#include <LiquidCrystal.h>
 #include "defines.h"
 #include "AppService.h"
+#include "FilterService.h"
 
-void setup(void)
-{
-    App->init();
+FilterService::FilterService() : RelayService(PIN_RELAY_FILTER) {
 }
 
-void loop(void)
-{
-    App->update();
+void FilterService::internalUpdate() {
+    int32_t mode = App->getSettingsService()->getFilteringMode();
+
+    if (mode == MODE_DISABLE) {
+        App->getSerial()->println("Filter: Manual disabled");
+        this->disable();
+    } else if (mode == MODE_ENABLE) {
+        App->getSerial()->println("Filter: Manual enabled");
+        this->enable();
+    } else if (mode == MODE_AUTO) {
+        // TODO: Implement some logic
+        App->getSerial()->println("Filter: Auto enabled");
+        this->enable();
+    }
 }
