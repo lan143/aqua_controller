@@ -45,13 +45,7 @@ void WifiService::update() {
 }
 
 bool WifiService::startClientMode(String* ssid, String* password) {
-    char ssid_buf[50];
-    char password_buf[50];
-
-    ssid->toCharArray(ssid_buf, 50);
-    password->toCharArray(password_buf, 50);
-
-    App->getWifi()->begin(ssid_buf, password_buf);
+    App->getWifi()->begin(ssid->c_str(), password->c_str());
 
     App->getSerial()->println("");
 

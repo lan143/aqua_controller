@@ -65,15 +65,9 @@ void SerialService::setSettings(std::vector<String> data) {
     App->getSerial()->println("Start set settings");
 
     if (data[1] == "ssid") {
-        unsigned char* buf = new unsigned char[100];
-        data[2].getBytes(buf, 100, 0);
-
-        App->getSettingsService()->setWifiAPSSID((const char*)buf);
+        App->getSettingsService()->setWifiAPSSID(data[2].c_str());
     } else if (data[1] == "password") {
-        unsigned char* buf = new unsigned char[100];
-        data[2].getBytes(buf, 100, 0);
-
-        App->getSettingsService()->setWifiAPPassword((const char*)buf);
+        App->getSettingsService()->setWifiAPPassword(data[2].c_str());
     }
 
     App->getSerial()->println("Complete.");
