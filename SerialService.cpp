@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-#include <Preferences.h>
 #include "AppService.h"
 #include "SerialService.h"
 
@@ -53,13 +52,8 @@ void SerialService::update() {
 void SerialService::resetSettings() {
     App->getSerial()->println("Start reset settings");
 
-    Preferences prefs;
-    prefs.begin("wifi", false);
-
-    prefs.putString("ssid", "unknown");
-    prefs.putString("password", "unknown");
-
-    prefs.end();
+    App->getSettingsService()->setWifiAPSSID("unknown");
+    App->getSettingsService()->setWifiAPPassword("unknown");
 
     App->getSerial()->println("Complete. Restart...");
 
@@ -70,16 +64,18 @@ void SerialService::resetSettings() {
 void SerialService::setSettings(std::vector<String> data) {
     App->getSerial()->println("Start set settings");
 
-    Preferences prefs;
-    prefs.begin("wifi", false);
-
     if (data[1] == "ssid") {
-        prefs.putString("ssid", data[2]);
+        unsigned char* buf = new unsigned char[100];
+        data[2].getBytes(buf, 100, 0);
+
+        App->getSettingsService()->setWifiAPSSID((const char*)buf);
     } else if (data[1] == "password") {
-        prefs.putString("password", data[2]);
+        unsigned char* buf = new unsigned char[100];
+        data[2].getBytes(buf, 100, 0);
+
+        App->getSettingsService()->setWifiAPPassword((const char*)buf);
     }
 
-    prefs.end();
     App->getSerial()->println("Complete.");
 }
 

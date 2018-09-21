@@ -38,4 +38,22 @@ void WebServer::init() {
     this->getServer()->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
         request->send_P(200, "text/html", index_html, processor);
     });
+
+    this->getServer()->on("/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        if (request->hasParam("wifiSSID", true)
+                && request->hasParam("wifiPassword", true)
+                && request->hasParam("apiAddress", true)
+                && request->hasParam("apiToken", true)
+                && request->hasParam("apiNo", true)) {
+            App->getSettingsService()->setWifiAPSSID(request->getParam("wifiSSID", true)->value().c_str());
+            App->getSettingsService()->setWifiAPPassword(request->getParam("wifiPassword", true)->value().c_str());
+            App->getSettingsService()->setApiAddress(request->getParam("apiAddress", true)->value().c_str());
+            App->getSettingsService()->setApiToken(request->getParam("apiToken", true)->value().c_str());
+            App->getSettingsService()->setApiAquariumId(atoi(request->getParam("apiNo", true)->value().c_str()));
+
+            request->send(200, "text/html", "<html><head><meta http-equiv=\"refresh\" content=\"1;URL=/\" /></head><body><p>Settings successful updated</p></body></html>");
+        } else {
+            request->send(416, "text/html", "Incorrect form data");
+        }
+    });
 }
