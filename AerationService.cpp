@@ -30,7 +30,7 @@ AerationService::AerationService() : RelayService(PIN_RELAY_AERATION) {
 }
 
 void AerationService::internalUpdate() {
-    int32_t mode = App->getSettingsService()->getHeatingMode();
+    int32_t mode = App->getSettingsService()->getAerationMode();
 
     if (mode == MODE_DISABLE) {
         App->getSerial()->println("Aeration: Manual disabled");

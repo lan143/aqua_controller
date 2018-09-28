@@ -46,14 +46,16 @@ void ApiService::updateSettings() {
 
     HTTPClient client;
 
-    char buffer[1000] = "";
-    sprintf(buffer, "/aquariums/%d/settings", App->getSettingsService()->getApiAquariumId());
-    String url = App->getSettingsService()->getApiAddress() + (String)buffer;
+    char url[1000] = "";
+    sprintf(url, "%s/aquariums/%d/settings",
+            App->getSettingsService()->getApiAddress().c_str(),
+            App->getSettingsService()->getApiAquariumId()
+    );
 
     App->getSerial()->print("Url: ");
-    App->getSerial()->println(url);
+    App->getSerial()->println((String) url);
 
-    client.begin(url);
+    client.begin((String) url);
     client.addHeader("Content-Type", "application/json");
     client.addHeader("Authorization", "Bearer " + App->getSettingsService()->getApiToken());
 
@@ -66,7 +68,7 @@ void ApiService::updateSettings() {
         String response = client.getString();
 
         StaticJsonBuffer<2000> jsonBuffer;
-        JsonObject& root = jsonBuffer.parseObject(response);
+        JsonObject &root = jsonBuffer.parseObject(response);
 
         App->getSettingsService()->setLightMode(root["lighting"]);
         App->getSettingsService()->setHeatingMode(root["heating"]);
@@ -85,12 +87,12 @@ void ApiService::sendStats() {
 
     HTTPClient client;
 
-    char buffer[1000] = "";
-    sprintf(buffer, "/aquariums/%d/stats", App->getSettingsService()->getApiAquariumId());
-    String url = App->getSettingsService()->getApiAddress() + (String)buffer;
+    char url[1000] = "";
+    sprintf(url, "%s/aquariums/%d/stats", App->getSettingsService()->getApiAddress().c_str(),
+            App->getSettingsService()->getApiAquariumId());
 
     App->getSerial()->print("Url: ");
-    App->getSerial()->println(url);
+    App->getSerial()->println((String) url);
 
     char data[1000];
     sprintf(
@@ -104,7 +106,7 @@ void ApiService::sendStats() {
             App->getOuterTemperatureService()->getValue()
     );
 
-    client.begin(url);
+    client.begin((String) url);
     client.addHeader("Content-Type", "application/json");
     client.addHeader("Authorization", "Bearer " + App->getSettingsService()->getApiToken());
 
