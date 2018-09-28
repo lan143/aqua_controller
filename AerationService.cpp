@@ -42,5 +42,8 @@ void AerationService::internalUpdate() {
         // TODO: Implement some logic
         App->getSerial()->println("Aeration: Auto enabled");
         this->enable();
+    } else {
+        App->getSerial()->print("Aeration: Unknown mode: ");
+        App->getSerial()->println(mode);
     }
 }

@@ -37,6 +37,11 @@ MaintainTemperatureService::MaintainTemperatureService() : Sensor(PIN_MAINTAIN_T
 void MaintainTemperatureService::internalUpdate() {
     this->_sensors->requestTemperatures();
     float val = this->_sensors->getTempCByIndex(0);
-    this->_value = this->_filter->filter(val);
+
+    if (!isnan(val)) {
+        this->_value = this->_filter->filter(val);
+    } else {
+        this->_value = -40;
+    }
 }
 

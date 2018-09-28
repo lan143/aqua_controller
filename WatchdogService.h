@@ -28,7 +28,7 @@
 #include <esp32-hal-timer.h>
 #include <esp_system.h>
 
-#define WATCHDOG_TIMEOUT 8000
+#define WATCHDOG_TIMEOUT 16000
 
 class WatchdogService {
 public:

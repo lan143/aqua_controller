@@ -51,5 +51,8 @@ void LightService::internalUpdate() {
             App->getSerial()->println("Light: Auto disabled");
             this->disable();
         }
+    } else {
+        App->getSerial()->print("Light: Unknown mode: ");
+        App->getSerial()->println(mode);
     }
 }

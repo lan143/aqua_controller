@@ -30,24 +30,29 @@ ClockService::ClockService() {
 }
 
 void ClockService::init() {
-    if (this->getRtc()->begin()) {
+    this->getRtc()->begin();
+
+    Wire.beginTransmission(DS3231_ADDRESS);
+    byte error = Wire.endTransmission();
+
+    if (error == 0) {
         this->_rtcInited = true;
 
         App->getSerial()->println("Found RTC module");
+
+        if (this->getRtc()->lostPower()) {
+            App->getSerial()->println("RTC module lost power, lets set the time!");
+            this->getRtc()->adjust(DateTime(F(__DATE__), F(__TIME__)));
+        }
     } else {
         this->_rtcInited = false;
 
-        App->getSerial()->println("Couldn't find RTC");
-    }
-
-    if (this->getRtc()->lostPower()) {
-        App->getSerial()->println("RTC lost power, lets set the time!");
-        this->getRtc()->adjust(DateTime(F(__DATE__), F(__TIME__)));
+        App->getSerial()->println("Couldn't find RTC module. The clock will work on the controller's internal timer.");
     }
 }
 
 void ClockService::update() {
-    if (this->_rtcInited && App->getNtpClient()->update()) {
+    if (App->getNtpClient()->update() && this->_rtcInited) {
         this->getRtc()->adjust(DateTime(App->getNtpClient()->getEpochTime()));
     }
 

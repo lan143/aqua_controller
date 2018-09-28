@@ -30,7 +30,7 @@ public:
     RelayService(int pin);
 
     void update();
-    bool isEnabled() { this->_isEnabled; }
+    bool isEnabled() { return this->_isEnabled; }
 
 protected:
     virtual void internalUpdate() = 0;

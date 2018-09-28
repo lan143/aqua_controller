@@ -36,7 +36,8 @@ void WebServer::init() {
     this->getServer()->begin();
 
     this->getServer()->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        request->send_P(200, "text/html", index_html, processor);
+        AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", index_html, &processor);
+        request->send(response);
     });
 
     this->getServer()->on("/", HTTP_POST, [](AsyncWebServerRequest *request) {

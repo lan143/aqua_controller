@@ -37,5 +37,7 @@ void OuterTemperatureService::internalUpdate() {
 
     if (!isnan(t)) {
         this->_value = this->_filter->filter(t);
+    } else {
+        this->_value = -40;
     }
 }

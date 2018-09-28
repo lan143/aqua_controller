@@ -49,5 +49,8 @@ void HeatingService::internalUpdate() {
             App->getSerial()->println("Heating: Auto disabled");
             this->disable();
         }
+    } else {
+        App->getSerial()->print("Heating: Unknown mode: ");
+        App->getSerial()->println(mode);
     }
 }

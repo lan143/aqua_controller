@@ -42,5 +42,8 @@ void FilterService::internalUpdate() {
         // TODO: Implement some logic
         App->getSerial()->println("Filter: Auto enabled");
         this->enable();
+    } else {
+        App->getSerial()->print("Filter: Unknown mode: ");
+        App->getSerial()->println(mode);
     }
 }

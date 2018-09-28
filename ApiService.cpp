@@ -42,18 +42,25 @@ void ApiService::internalUpdate() {
 }
 
 void ApiService::updateSettings() {
+    App->getSerial()->println("Call update settings");
+
     HTTPClient client;
 
-    char url[1000];
+    char buffer[1000] = "";
+    sprintf(buffer, "/aquariums/%d/settings", App->getSettingsService()->getApiAquariumId());
+    String url = App->getSettingsService()->getApiAddress() + (String)buffer;
 
-    sprintf(url, "%s/aquariums/%d/settings", App->getSettingsService()->getApiAddress(),
-            App->getSettingsService()->getApiAquariumId());
+    App->getSerial()->print("Url: ");
+    App->getSerial()->println(url);
 
-    client.begin((String) url);
+    client.begin(url);
     client.addHeader("Content-Type", "application/json");
     client.addHeader("Authorization", "Bearer " + App->getSettingsService()->getApiToken());
 
     int httpResponseCode = client.GET();
+
+    App->getSerial()->print("httpResponseCode: ");
+    App->getSerial()->println(httpResponseCode);
 
     if (httpResponseCode == 200) {
         String response = client.getString();
@@ -74,17 +81,21 @@ void ApiService::updateSettings() {
 }
 
 void ApiService::sendStats() {
+    App->getSerial()->println("Call send stats");
+
     HTTPClient client;
 
-    char url[1000];
+    char buffer[1000] = "";
+    sprintf(buffer, "/aquariums/%d/stats", App->getSettingsService()->getApiAquariumId());
+    String url = App->getSettingsService()->getApiAddress() + (String)buffer;
 
-    sprintf(url, "%s/aquariums/%d/stats", App->getSettingsService()->getApiAddress(),
-            App->getSettingsService()->getApiAquariumId());
+    App->getSerial()->print("Url: ");
+    App->getSerial()->println(url);
 
     char data[1000];
     sprintf(
             data,
-            "{\"heating\":\"%d\", \"aeration\": \"%d\", \"lighting\": \"%d\", \"filtering\": \"%d\", \"maintainTemperature\": \"%f\", \"outerTemperature\": \"%f\"}",
+            "{\"heating\":\"%d\", \"aeration\": \"%d\", \"lighting\": \"%d\", \"filtering\": \"%d\", \"maintainTemperature\": \"%0.2f\", \"outerTemperature\": \"%0.2f\"}",
             (int) App->getHeatingService()->isEnabled(),
             (int) App->getAerationService()->isEnabled(),
             (int) App->getLightService()->isEnabled(),
@@ -93,11 +104,21 @@ void ApiService::sendStats() {
             App->getOuterTemperatureService()->getValue()
     );
 
-    client.begin((String) url);
+    client.begin(url);
     client.addHeader("Content-Type", "application/json");
     client.addHeader("Authorization", "Bearer " + App->getSettingsService()->getApiToken());
 
-    client.POST((String) data);
+    int httpResponseCode = client.POST((String) data);
+
+    App->getSerial()->print("httpResponseCode: ");
+    App->getSerial()->println(httpResponseCode);
+
+    if (httpResponseCode > 0 && httpResponseCode != 200) {
+        String response = client.getString();
+
+        App->getSerial()->print("Response: ");
+        App->getSerial()->println(response);
+    }
 
     client.end();
 }

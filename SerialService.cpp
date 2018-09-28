@@ -30,21 +30,24 @@ SerialService::SerialService() {
 
 void SerialService::update() {
     std::vector<String> line = readLine();
-    String command = (String)*line.begin();
 
-    if (command != "") {
-        App->getSerial()->print("Read command: ");
-        App->getSerial()->println(command);
+    if (line.size() > 0) {
+        String command = *line.begin();
 
-        if (command == "reset") {
-            this->resetSettings();
-        } else if (command == "set") {
-            this->setSettings(line);
-        } else if (command == "restart") {
-            App->getSerial()->println("Restart...");
+        if (command != "") {
+            App->getSerial()->print("Read command: ");
+            App->getSerial()->println(command);
 
-            delay(2000);
-            ESP.restart();
+            if (command == "reset") {
+                this->resetSettings();
+            } else if (command == "set") {
+                this->setSettings(line);
+            } else if (command == "restart") {
+                App->getSerial()->println("Restart...");
+
+                delay(2000);
+                ESP.restart();
+            }
         }
     }
 }
@@ -64,13 +67,19 @@ void SerialService::resetSettings() {
 void SerialService::setSettings(std::vector<String> data) {
     App->getSerial()->println("Start set settings");
 
-    if (data[1] == "ssid") {
-        App->getSettingsService()->setWifiAPSSID(data[2].c_str());
-    } else if (data[1] == "password") {
-        App->getSettingsService()->setWifiAPPassword(data[2].c_str());
-    }
+    if (data.size() == 3) {
+        if (data[1] == "ssid") {
+            App->getSettingsService()->setWifiAPSSID(data[2].c_str());
+        } else if (data[1] == "password") {
+            App->getSettingsService()->setWifiAPPassword(data[2].c_str());
+        } else {
+            App->getSerial()->println("Unknown command argument.");
+        }
 
-    App->getSerial()->println("Complete.");
+        App->getSerial()->println("Complete.");
+    } else {
+        App->getSerial()->println("Incorrect command arguments count.");
+    }
 }
 
 std::vector<String> SerialService::readLine() {
@@ -81,6 +90,7 @@ std::vector<String> SerialService::readLine() {
         char inChar = App->getSerial()->read();
 
         if (inChar == '\n') {
+            out.push_back(inString);
             return out;
         } else if (inChar == ' ') {
             out.push_back(inString);
