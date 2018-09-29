@@ -23,9 +23,9 @@
  */
 
 #include <ArduinoJson.h>
-#include "AppService.h"
+#include "../AppService.h"
 #include "WebServer.h"
-#include "SettingsService.h"
+#include "../settings/SettingsService.h"
 #include "webpage.h"
 
 WebServer::WebServer() {

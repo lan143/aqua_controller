@@ -22,28 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef _CLOCK_SERVICE_H_
-#define _CLOCK_SERVICE_H_
+#include "../../defines.h"
+#include "../../AppService.h"
+#include "AerationService.h"
 
-#include "Wire.h"
-#include "RTClib.h"
+AerationService::AerationService() : RelayService(PIN_RELAY_AERATION) {
+}
 
-class ClockService {
-public:
-    ClockService();
+void AerationService::internalUpdate() {
+    int32_t mode = App->getSettingsService()->getAerationMode();
 
-    void init();
-    void update();
-
-    DateTime getCurrentDateTime();
-
-private:
-    RTC_DS3231* _rtc;
-    bool _rtcInited;
-
-    RTC_DS3231* getRtc() { return this->_rtc; };
-
-    unsigned long _lastDisplayTime = 0;
-};
-
-#endif
+    if (mode == MODE_DISABLE) {
+        App->getSerial()->println("Aeration: Manual disabled");
+        this->disable();
+    } else if (mode == MODE_ENABLE) {
+        App->getSerial()->println("Aeration: Manual enabled");
+        this->enable();
+    } else if (mode == MODE_AUTO) {
+        // TODO: Implement some logic
+        App->getSerial()->println("Aeration: Auto enabled");
+        this->enable();
+    } else {
+        App->getSerial()->print("Aeration: Unknown mode: ");
+        App->getSerial()->println(mode);
+    }
+}

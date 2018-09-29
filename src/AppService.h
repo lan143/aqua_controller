@@ -28,20 +28,20 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
-#include "ClockService.h"
-#include "SettingsService.h"
-#include "WebServer.h"
-#include "WifiService.h"
-#include "SerialService.h"
-#include "NTPClient.h"
-#include "WatchdogService.h"
-#include "LightService.h"
-#include "HeatingService.h"
-#include "AerationService.h"
-#include "FilterService.h"
-#include "MaintainTemperatureService.h"
-#include "OuterTemperatureService.h"
-#include "ApiService.h"
+#include "api/ApiService.h"
+#include "clock/ClockService.h"
+#include "settings/SettingsService.h"
+#include "ntp/NTPClient.h"
+#include "relays/impl/LightService.h"
+#include "relays/impl/HeatingService.h"
+#include "relays/impl/AerationService.h"
+#include "relays/impl/FilterService.h"
+#include "serial/SerialService.h"
+#include "sensors/impl/MaintainTemperatureService.h"
+#include "sensors/impl/OuterTemperatureService.h"
+#include "watchdog/WatchdogService.h"
+#include "web/WebServer.h"
+#include "wifi/WifiService.h"
 
 #define App AppService::getInstance()
 

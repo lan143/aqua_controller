@@ -22,17 +22,22 @@
  * SOFTWARE.
  */
 
-#ifndef AQUA_CONTROLLER_LIGHTSERVICE_H
-#define AQUA_CONTROLLER_LIGHTSERVICE_H
+#ifndef AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H
+#define AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H
 
-#include "RelayService.h"
+#include <DHT.h>
+#include "../Sensor.h"
+#include "../../kalman/KalmanFilter.h"
 
-class LightService : public RelayService {
+class OuterTemperatureService : public Sensor {
 public:
-    LightService();
+    OuterTemperatureService();
 
 protected:
     void internalUpdate();
+
+    KalmanFilter* _filter;
+    DHT *_dht;
 };
 
-#endif //AQUA_CONTROLLER_LIGHTSERVICE_H
+#endif //AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H

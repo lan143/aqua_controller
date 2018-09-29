@@ -22,17 +22,25 @@
  * SOFTWARE.
  */
 
-#ifndef AQUA_CONTROLLER_AERATIONSERVICE_H
-#define AQUA_CONTROLLER_AERATIONSERVICE_H
+#ifndef AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H
+#define AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H
 
-#include "RelayService.h"
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include "../Sensor.h"
+#include "../../kalman/KalmanFilter.h"
 
-class AerationService : public RelayService {
+class MaintainTemperatureService : public Sensor {
 public:
-    AerationService();
+    MaintainTemperatureService();
 
 protected:
     void internalUpdate();
+
+    KalmanFilter* _filter;
+    OneWire* _bus;
+    DallasTemperature* _sensors;
+    DeviceAddress _sensorAddress;
 };
 
-#endif //AQUA_CONTROLLER_AERATIONSERVICE_H
+#endif //AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H

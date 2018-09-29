@@ -22,28 +22,17 @@
  * SOFTWARE.
  */
 
-#include "defines.h"
-#include "AppService.h"
-#include "AerationService.h"
+#ifndef AQUA_CONTROLLER_AERATIONSERVICE_H
+#define AQUA_CONTROLLER_AERATIONSERVICE_H
 
-AerationService::AerationService() : RelayService(PIN_RELAY_AERATION) {
-}
+#include "../RelayService.h"
 
-void AerationService::internalUpdate() {
-    int32_t mode = App->getSettingsService()->getAerationMode();
+class AerationService : public RelayService {
+public:
+    AerationService();
 
-    if (mode == MODE_DISABLE) {
-        App->getSerial()->println("Aeration: Manual disabled");
-        this->disable();
-    } else if (mode == MODE_ENABLE) {
-        App->getSerial()->println("Aeration: Manual enabled");
-        this->enable();
-    } else if (mode == MODE_AUTO) {
-        // TODO: Implement some logic
-        App->getSerial()->println("Aeration: Auto enabled");
-        this->enable();
-    } else {
-        App->getSerial()->print("Aeration: Unknown mode: ");
-        App->getSerial()->println(mode);
-    }
-}
+protected:
+    void internalUpdate();
+};
+
+#endif //AQUA_CONTROLLER_AERATIONSERVICE_H

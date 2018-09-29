@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "AppService.h"
+#include "../AppService.h"
 #include "SerialService.h"
 
 SerialService::SerialService() {

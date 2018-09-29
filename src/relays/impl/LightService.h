@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef AQUA_CONTROLLER_FILTERSERVICE_H
-#define AQUA_CONTROLLER_FILTERSERVICE_H
+#ifndef AQUA_CONTROLLER_LIGHTSERVICE_H
+#define AQUA_CONTROLLER_LIGHTSERVICE_H
 
-#include "RelayService.h"
+#include "../RelayService.h"
 
-class FilterService : public RelayService {
+class LightService : public RelayService {
 public:
-    FilterService();
+    LightService();
 
 protected:
     void internalUpdate();
 };
 
-#endif //AQUA_CONTROLLER_FILTERSERVICE_H
+#endif //AQUA_CONTROLLER_LIGHTSERVICE_H

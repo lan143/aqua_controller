@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "AppService.h"
+#include "../AppService.h"
 #include "Sensor.h"
 
 Sensor::Sensor(int pin) {

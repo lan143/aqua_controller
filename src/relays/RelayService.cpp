@@ -22,22 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H
-#define AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H
+#include "../AppService.h"
+#include "RelayService.h"
 
-#include <DHT.h>
-#include "Sensor.h"
-#include "KalmanFilter.h"
+RelayService::RelayService(int pin) {
+    this->_pin = pin;
 
-class OuterTemperatureService : public Sensor {
-public:
-    OuterTemperatureService();
+    pinMode(this->getPin(), OUTPUT);
+}
 
-protected:
-    void internalUpdate();
+void RelayService::update() {
+    if ((millis() - this->_lastUpdateTime >= 2000) || this->_lastUpdateTime == 0) {
+        this->internalUpdate();
+        this->_lastUpdateTime = millis();
+    }
+}
 
-    KalmanFilter* _filter;
-    DHT *_dht;
-};
+void RelayService::enable() {
+    this->_isEnabled = true;
+    digitalWrite(this->getPin(), LOW);
+}
 
-#endif //AQUA_CONTROLLER_OUTERTEMPERATURESERVICE_H
+void RelayService::disable() {
+    this->_isEnabled = false;
+    digitalWrite(this->getPin(), HIGH);
+}

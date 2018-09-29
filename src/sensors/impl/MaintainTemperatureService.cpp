@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "defines.h"
+#include "../../defines.h"
 #include "MaintainTemperatureService.h"
 
 MaintainTemperatureService::MaintainTemperatureService() : Sensor(PIN_MAINTAIN_TEMPERATURE) {

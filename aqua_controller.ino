@@ -23,8 +23,8 @@
  */
 
 #include <LiquidCrystal.h>
-#include "defines.h"
-#include "AppService.h"
+#include "src/defines.h"
+#include "src/AppService.h"
 
 void setup(void)
 {

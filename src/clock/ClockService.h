@@ -22,25 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H
-#define AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H
+#ifndef _CLOCK_SERVICE_H_
+#define _CLOCK_SERVICE_H_
 
-#include <OneWire.h>
-#include <DallasTemperature.h>
-#include "Sensor.h"
-#include "KalmanFilter.h"
+#include <Wire.h>
+#include <RTClib.h>
 
-class MaintainTemperatureService : public Sensor {
+class ClockService {
 public:
-    MaintainTemperatureService();
+    ClockService();
 
-protected:
-    void internalUpdate();
+    void init();
+    void update();
 
-    KalmanFilter* _filter;
-    OneWire* _bus;
-    DallasTemperature* _sensors;
-    DeviceAddress _sensorAddress;
+    DateTime getCurrentDateTime();
+
+private:
+    RTC_DS3231* _rtc;
+    bool _rtcInited;
+
+    RTC_DS3231* getRtc() { return this->_rtc; };
+
+    unsigned long _lastDisplayTime = 0;
 };
 
-#endif //AQUA_CONTROLLER_MAINTAINTEMPERATURESERVICE_H
+#endif

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "AppService.h"
+#include "../AppService.h"
 #include "ClockService.h"
 
 ClockService::ClockService() {

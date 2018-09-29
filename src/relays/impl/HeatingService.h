@@ -25,7 +25,7 @@
 #ifndef AQUA_CONTROLLER_HEATINGSERVICE_H
 #define AQUA_CONTROLLER_HEATINGSERVICE_H
 
-#include "RelayService.h"
+#include "../RelayService.h"
 
 class HeatingService : public RelayService {
 public:

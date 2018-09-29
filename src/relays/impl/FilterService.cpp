@@ -22,28 +22,28 @@
  * SOFTWARE.
  */
 
-#include "AppService.h"
-#include "RelayService.h"
+#include "../../defines.h"
+#include "../../AppService.h"
+#include "FilterService.h"
 
-RelayService::RelayService(int pin) {
-    this->_pin = pin;
-
-    pinMode(this->getPin(), OUTPUT);
+FilterService::FilterService() : RelayService(PIN_RELAY_FILTER) {
 }
 
-void RelayService::update() {
-    if ((millis() - this->_lastUpdateTime >= 2000) || this->_lastUpdateTime == 0) {
-        this->internalUpdate();
-        this->_lastUpdateTime = millis();
+void FilterService::internalUpdate() {
+    int32_t mode = App->getSettingsService()->getFilteringMode();
+
+    if (mode == MODE_DISABLE) {
+        App->getSerial()->println("Filter: Manual disabled");
+        this->disable();
+    } else if (mode == MODE_ENABLE) {
+        App->getSerial()->println("Filter: Manual enabled");
+        this->enable();
+    } else if (mode == MODE_AUTO) {
+        // TODO: Implement some logic
+        App->getSerial()->println("Filter: Auto enabled");
+        this->enable();
+    } else {
+        App->getSerial()->print("Filter: Unknown mode: ");
+        App->getSerial()->println(mode);
     }
-}
-
-void RelayService::enable() {
-    this->_isEnabled = true;
-    digitalWrite(this->getPin(), LOW);
-}
-
-void RelayService::disable() {
-    this->_isEnabled = false;
-    digitalWrite(this->getPin(), HIGH);
 }

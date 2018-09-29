@@ -22,22 +22,17 @@
  * SOFTWARE.
  */
 
-#include "defines.h"
-#include "OuterTemperatureService.h"
+#ifndef AQUA_CONTROLLER_FILTERSERVICE_H
+#define AQUA_CONTROLLER_FILTERSERVICE_H
 
-OuterTemperatureService::OuterTemperatureService() : Sensor(PIN_OUTER_SENSOR) {
-    this->_filter = new KalmanFilter(0.5, 0.05);
+#include "../RelayService.h"
 
-    this->_dht = new DHT(this->getPin(), DHT22);
-    this->_dht->begin();
-}
+class FilterService : public RelayService {
+public:
+    FilterService();
 
-void OuterTemperatureService::internalUpdate() {
-    float t = this->_dht->readTemperature();
+protected:
+    void internalUpdate();
+};
 
-    if (!isnan(t)) {
-        this->_value = this->_filter->filter(t);
-    } else {
-        this->_value = -40;
-    }
-}
+#endif //AQUA_CONTROLLER_FILTERSERVICE_H

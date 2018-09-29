@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include "defines.h"
-#include "AppService.h"
+#include "../../defines.h"
+#include "../../AppService.h"
 #include "LightService.h"
 
 LightService::LightService() : RelayService(PIN_RELAY_LIGHT) {

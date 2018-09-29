@@ -24,7 +24,7 @@
 
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-#include "AppService.h"
+#include "../AppService.h"
 #include "ApiService.h"
 
 ApiService::ApiService() {}

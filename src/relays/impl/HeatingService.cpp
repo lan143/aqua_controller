@@ -22,28 +22,35 @@
  * SOFTWARE.
  */
 
-#include "defines.h"
-#include "AppService.h"
-#include "FilterService.h"
+#include "../../defines.h"
+#include "../../AppService.h"
+#include "HeatingService.h"
 
-FilterService::FilterService() : RelayService(PIN_RELAY_FILTER) {
+HeatingService::HeatingService() : RelayService(PIN_RELAY_HEATING) {
 }
 
-void FilterService::internalUpdate() {
-    int32_t mode = App->getSettingsService()->getFilteringMode();
+void HeatingService::internalUpdate() {
+    int32_t mode = App->getSettingsService()->getHeatingMode();
 
     if (mode == MODE_DISABLE) {
-        App->getSerial()->println("Filter: Manual disabled");
+        App->getSerial()->println("Heating: Manual disabled");
         this->disable();
     } else if (mode == MODE_ENABLE) {
-        App->getSerial()->println("Filter: Manual enabled");
+        App->getSerial()->println("Heating: Manual enabled");
         this->enable();
     } else if (mode == MODE_AUTO) {
-        // TODO: Implement some logic
-        App->getSerial()->println("Filter: Auto enabled");
-        this->enable();
+        int32_t needTemperature = App->getSettingsService()->getMaintainTemperature();
+        float currentTemperature = App->getMaintainTemperatureService()->getValue();
+
+        if (needTemperature - currentTemperature >= 2) {
+            App->getSerial()->println("Heating: Auto enabled");
+            this->enable();
+        } else {
+            App->getSerial()->println("Heating: Auto disabled");
+            this->disable();
+        }
     } else {
-        App->getSerial()->print("Filter: Unknown mode: ");
+        App->getSerial()->print("Heating: Unknown mode: ");
         App->getSerial()->println(mode);
     }
 }
