@@ -44,7 +44,7 @@ void LightService::internalUpdate() {
         DateTime dateTime = App->getClockService()->getCurrentDateTime();
         int32_t currentTime = dateTime.hour() * 100 + dateTime.minute();
 
-        if (startTime >= currentTime && currentTime <= endTime) {
+        if (currentTime >= startTime && currentTime <= endTime) {
             App->getSerial()->println("Light: Auto enabled");
             this->enable();
         } else {
