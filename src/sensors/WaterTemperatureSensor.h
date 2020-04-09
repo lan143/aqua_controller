@@ -22,14 +22,23 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#ifndef H_WATER_TEMPERATURE_SENSOR_H
+#define H_WATER_TEMPERATURE_SENSOR_H
 
-#include "tasks/PeriodicTask.h"
+#include "drivers/TemperatureSensor.h"
+#include "Sensor.h"
 
-class Sensor : public PeriodicTask {
+class WaterTemperatureSensor : public Sensor {
 public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
+    WaterTemperatureSensor(TemperatureSensor *sensor) : Sensor("WaterTemperatureSensor", 3, 2000, 1600) { this->_sensor = sensor; }
+
+    float getValue() { return this->_value; }
+
+    void update();
+
+private:
+    TemperatureSensor *_sensor;
+    float _value;
 };
 
 #endif

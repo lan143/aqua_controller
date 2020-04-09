@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#include "WaterTemperatureSensor.h"
+#include "log/Log.h"
 
-#include "tasks/PeriodicTask.h"
+void WaterTemperatureSensor::update() {
+    Log.trace("Update water temperature sensor\r\n");
 
-class Sensor : public PeriodicTask {
-public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
-};
-
-#endif
+    this->_value = this->_sensor->getTemperature();
+}

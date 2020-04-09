@@ -22,14 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#ifndef H_TEMPERATURE_SENSOR_H
+#define H_TEMPERATURE_SENSOR_H
 
-#include "tasks/PeriodicTask.h"
-
-class Sensor : public PeriodicTask {
+class TemperatureSensor {
 public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
+    TemperatureSensor(int pin) { this->_pin = pin; };
+
+    virtual float getTemperature() = 0;
+
+protected:
+    int _pin;
 };
 
-#endif
+#endif //H_TEMPERATURE_SENSOR_H

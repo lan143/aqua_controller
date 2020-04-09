@@ -22,14 +22,45 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#ifndef H_PERIODIC_TASK_H
+#define H_PERIODIC_TASK_H
 
-#include "tasks/PeriodicTask.h"
+#include "log/Log.h"
 
-class Sensor : public PeriodicTask {
+void startTaskImpl(void *pvParameters);
+
+class PeriodicTask {
 public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
+    PeriodicTask(const char* taskName, int priority, int loopTime, int stackSize) {
+        this->_taskName = taskName;
+        this->_priority = priority;
+        this->_loopTime = loopTime;
+        this->_stackSize = stackSize;
+    }
+
+    void init() {
+        Log.trace("Init %s task.\r\n", this->_taskName);
+
+        portBASE_TYPE result = xTaskCreate(startTaskImpl, this->_taskName, this->_stackSize, this, 1, NULL);
+
+        if (result == pdTRUE) {
+            Log.trace("Success create task %s.\r\n", this->_taskName);
+        } else if (result == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY) {
+            Log.error("Cant create task %s. Could not allocate required memory.\r\n", this->_taskName);
+        } else {
+            Log.error("Cant create task %s.\r\n", this->_taskName);
+        }
+    }
+
+    int getLoopTime() { return this->_loopTime; }
+
+    virtual void update() = 0;
+
+protected:
+    const char* _taskName;
+    int _priority;
+    int _loopTime;
+    int _stackSize;
 };
 
 #endif

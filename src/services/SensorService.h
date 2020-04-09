@@ -22,14 +22,27 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#ifndef H_SENSOR_SERVICE_H
+#define H_SENSOR_SERVICE_H
 
-#include "tasks/PeriodicTask.h"
+#include "sensors/Sensor.h"
 
-class Sensor : public PeriodicTask {
-public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
+enum Sensors {
+    WATER_TEMPERATURE_SENSOR = 0,
+    SENSORS_MAX = 1,
 };
+
+class SensorService {
+public:
+    SensorService();
+    void init();
+
+    Sensor* getSensor(Sensors index);
+
+private:
+    Sensor **_sensors;
+};
+
+extern SensorService sensorService;
 
 #endif

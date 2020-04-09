@@ -22,14 +22,22 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#ifndef H_HEATING_SERVICE_H
+#define H_HEATING_SERVICE_H
 
+#include <PID_v1.h>
 #include "tasks/PeriodicTask.h"
 
-class Sensor : public PeriodicTask {
+class HeatingService : public PeriodicTask {
 public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
+    HeatingService();
+
+    void update();
+private:
+    double _setPoint;
+    double _input;
+    double _output;
+    PID* _pid;
 };
 
 #endif

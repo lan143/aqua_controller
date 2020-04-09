@@ -22,14 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#include "PeriodicTask.h"
 
-#include "tasks/PeriodicTask.h"
+void startTaskImpl(void *pvParameters) {
+    Log.trace("startTaskImpl\r\n");
 
-class Sensor : public PeriodicTask {
-public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
-};
+    PeriodicTask *pThis = (PeriodicTask*)pvParameters;
 
-#endif
+    while (1) {
+        pThis->update();
+        vTaskDelay(pThis->getLoopTime() / portTICK_RATE_MS);
+    }
+
+    vTaskDelete(NULL);
+}

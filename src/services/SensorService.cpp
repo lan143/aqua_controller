@@ -22,14 +22,24 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#include "defines.h"
+#include "SensorService.h"
+#include "sensors/WaterTemperatureSensor.h"
+#include "drivers/DS18B20Sensor.h"
 
-#include "tasks/PeriodicTask.h"
+SensorService::SensorService() {
+    this->_sensors = new Sensor*[SENSORS_MAX];
+}
 
-class Sensor : public PeriodicTask {
-public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
-};
+void SensorService::init() {
+    #ifdef WATER_TEMPERATURE_SENSOR_DS18B20
+        this->_sensors[WATER_TEMPERATURE_SENSOR] = new WaterTemperatureSensor(new DS18B20Sensor(PIN_WATER_TEMPERATURE_SENSOR));
+        this->_sensors[WATER_TEMPERATURE_SENSOR]->init();
+    #endif
+}
 
-#endif
+Sensor* SensorService::getSensor(Sensors index) {
+    return this->_sensors[index];
+}
+
+SensorService sensorService = SensorService();

@@ -22,14 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_task_wdt.h"
+#include <Arduino.h>
+#include "log/Log.h"
+#include "services/SensorService.h"
+#include "services/HeatingService.h"
 
-#include "tasks/PeriodicTask.h"
+void setup() {
+  delay(3000);
 
-class Sensor : public PeriodicTask {
-public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
-};
+  Serial.begin(115200);
 
-#endif
+  while (!Serial) {}
+
+  Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+  Log.trace("Serial inited. Start init other...\r\n");
+
+  sensorService.init();
+  HeatingService* heatingService = new HeatingService();
+  heatingService->init();
+
+  Log.trace("Init completed. Running...\r\n");
+}
+
+void loop() {
+}

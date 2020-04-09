@@ -22,14 +22,24 @@
  * SOFTWARE.
  */
 
-#ifndef H_SENSOR_H
-#define H_SENSOR_H
+#ifndef H_DS18B20SENSOR_H
+#define H_DS18B20SENSOR_H
 
-#include "tasks/PeriodicTask.h"
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include "TemperatureSensor.h"
 
-class Sensor : public PeriodicTask {
+#define DS18B20_INTERVAL_UPDATE 2000;
+
+class DS18B20Sensor final : public TemperatureSensor {
 public:
-    Sensor(const char* taskName, int priority, int loopTime, int stackSize) : PeriodicTask(taskName, priority, loopTime, stackSize) {}
+    DS18B20Sensor(int pin);
+    float getTemperature();
+
+private:
+    OneWire* _bus;
+    DallasTemperature* _sensors;
+    bool _ready;
 };
 
-#endif
+#endif //H_DS18B20SENSOR_H
