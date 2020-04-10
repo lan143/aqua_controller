@@ -27,10 +27,11 @@
 #include "SensorService.h"
 #include "sensors/WaterTemperatureSensor.h"
 
-HeatingService::HeatingService() : PeriodicTask("HeatingService", 2, 2000, 6000) {
+HeatingService::HeatingService(PWMDriver* driver) : PeriodicTask("HeatingService", 2, 2000, 6000) {
+    this->_driver = driver;
     double Kp = 2, Ki = 0.8, Kd = 0.5;
     this->_pid = new PID(&this->_input, &this->_output, &this->_setPoint, Kp, Ki, Kd, DIRECT);
-    this->_pid->SetOutputLimits(0, 100);
+    this->_pid->SetOutputLimits(0, 255);
 	this->_pid->SetSampleTime(2000);
 	this->_pid->SetMode(AUTOMATIC);
 }
@@ -41,13 +42,14 @@ void HeatingService::update() {
 
     if (temp > -40) {
         this->_input = temp;
-        Log.trace("HeatingService: current temp is %d\r\n", (int)this->_input);
+        Log.trace("HeatingService: current temp is %F\r\n", this->_input);
         this->_setPoint = 25; // @todo: load from EEPROM
         Log.trace("HeatingService: try PID compute\r\n");
 
         if (this->_pid->Compute()) {
             Log.trace("HeatingService: PID computed!\r\n");
-            Log.trace("HeatingService: PWM Level: %d\r\n", (int)this->_output);
+            Log.trace("HeatingService: PWM Level: %F\r\n", this->_output);
+            this->_driver->setPwm(this->_output);
         }
     } else {
         Log.error("HeatingService: got incorrect current temperature\r\n");

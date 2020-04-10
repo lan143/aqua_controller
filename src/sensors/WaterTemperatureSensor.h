@@ -25,19 +25,19 @@
 #ifndef H_WATER_TEMPERATURE_SENSOR_H
 #define H_WATER_TEMPERATURE_SENSOR_H
 
-#include "drivers/TemperatureSensor.h"
+#include "drivers/TemperatureDriver.h"
 #include "Sensor.h"
 
 class WaterTemperatureSensor : public Sensor {
 public:
-    WaterTemperatureSensor(TemperatureSensor *sensor) : Sensor("WaterTemperatureSensor", 3, 2000, 1600) { this->_sensor = sensor; }
+    WaterTemperatureSensor(TemperatureDriver *driver) : Sensor("WaterTemperatureSensor", 3, 2000, 1600) { this->_driver = driver; }
 
     float getValue() { return this->_value; }
 
     void update();
 
 private:
-    TemperatureSensor *_sensor;
+    TemperatureDriver *_driver;
     float _value;
 };
 

@@ -22,24 +22,21 @@
  * SOFTWARE.
  */
 
-#ifndef H_DS18B20SENSOR_H
-#define H_DS18B20SENSOR_H
+#ifndef H_DS18B20DRIVER_H
+#define H_DS18B20DRIVER_H
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include "TemperatureSensor.h"
+#include "TemperatureDriver.h"
 
-#define DS18B20_INTERVAL_UPDATE 2000;
-
-class DS18B20Sensor final : public TemperatureSensor {
+class DS18B20Driver final : public TemperatureDriver {
 public:
-    DS18B20Sensor(int pin);
+    DS18B20Driver(int pin);
     float getTemperature();
 
 private:
-    OneWire* _bus;
     DallasTemperature* _sensors;
     bool _ready;
 };
 
-#endif //H_DS18B20SENSOR_H
+#endif //H_DS18B20DRIVER_H

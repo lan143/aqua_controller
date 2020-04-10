@@ -22,11 +22,18 @@
  * SOFTWARE.
  */
 
-#include "WaterTemperatureSensor.h"
-#include "log/Log.h"
+#include "PWMRelayDriver.h"
 
-void WaterTemperatureSensor::update() {
-    Log.trace("Update water temperature sensor\r\n");
+void PWMRelayDriver::update() {
+    if (millis() - this->_tmr >= (this->_flag ? this->_activePeriod : (this->_period - this->_activePeriod))) {
+        this->_tmr = millis();
+        this->_flag = !this->_flag;
+        digitalWrite(this->_pin, this->_flag ^ this->_dir);
+    }
+}
 
-    this->_value = this->_driver->getTemperature();
+void PWMRelayDriver::setPwm(int pwm) {
+    PWMDriver::setPwm(pwm);
+
+    _activePeriod = (long)this->_pwm * _period / 255;
 }

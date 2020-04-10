@@ -22,11 +22,30 @@
  * SOFTWARE.
  */
 
-#include "WaterTemperatureSensor.h"
-#include "log/Log.h"
+#ifndef H_PWM_DRIVER_H
+#define H_PWM_DRIVER_H
 
-void WaterTemperatureSensor::update() {
-    Log.trace("Update water temperature sensor\r\n");
+class PWMDriver {
+public:
+    PWMDriver(int pin) {
+        this->_pwm = 0;
+        this->_pin = pin;
+    }
 
-    this->_value = this->_driver->getTemperature();
-}
+    void setPwm(int pwm) {
+        if (pwm < 0) {
+            pwm = 0;
+        }
+
+        if (pwm > 255) {
+            pwm = 255;
+        }
+
+        this->_pwm = 255;
+    }
+protected:
+    int _pin;
+    int _pwm;
+};
+
+#endif

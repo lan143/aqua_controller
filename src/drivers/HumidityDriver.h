@@ -22,11 +22,17 @@
  * SOFTWARE.
  */
 
-#include "WaterTemperatureSensor.h"
-#include "log/Log.h"
+#ifndef H_HUMIDITY_DRIVER_H
+#define H_HUMIDITY_DRIVER_H
 
-void WaterTemperatureSensor::update() {
-    Log.trace("Update water temperature sensor\r\n");
+class HumidityDriver {
+public:
+    HumidityDriver(int pin) { this->_pin = pin; };
 
-    this->_value = this->_driver->getTemperature();
-}
+    virtual float getHumidity() = 0;
+
+protected:
+    int _pin;
+};
+
+#endif

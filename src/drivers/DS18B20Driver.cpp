@@ -22,40 +22,42 @@
  * SOFTWARE.
  */
 
-#include "DS18B20Sensor.h"
+#include "DS18B20Driver.h"
 #include "log/Log.h"
 
-DS18B20Sensor::DS18B20Sensor(int pin) : TemperatureSensor(pin) {
-    this->_bus = new OneWire(this->_pin);
-    this->_sensors = new DallasTemperature(this->_bus);
+DS18B20Driver::DS18B20Driver(int pin) : TemperatureDriver(pin) {
+    Log.trace("DS18B20Driver: init.\r\n");
+    OneWire* wire = new OneWire(this->_pin);
+    this->_sensors = new DallasTemperature(wire);
+    this->_sensors->begin();
     this->_sensors->begin();
 
     if (this->_sensors->getDeviceCount() > 0) {
-        Log.trace("DS18B20Sensor: Found %d sensors.\r\n", this->_sensors->getDeviceCount());
-        Log.trace("DS18B20Sensor: Parasite power is %s\r\n", this->_sensors->isParasitePowerMode() ? "ON" : "OFF");
+        Log.trace("DS18B20Driver: Found %d sensors.\r\n", this->_sensors->getDeviceCount());
+        Log.trace("DS18B20Driver: Parasite power is %s\r\n", this->_sensors->isParasitePowerMode() ? "ON" : "OFF");
         this->_ready = true;
     } else {
-        Log.error("DS18B20Sensor: sensors not found\r\n");
+        Log.error("DS18B20Driver: sensors not found\r\n");
         this->_ready = false;
     }
 }
 
-float DS18B20Sensor::getTemperature() {
+float DS18B20Driver::getTemperature() {
     if (!this->_ready) {
         return -40.0f;
     }
 
-    Log.trace("DS18B20Sensor: start get temperature.\r\n");
-    Log.trace("DS18B20Sensor: requestTemperatures.\r\n");
+    Log.trace("DS18B20Driver: start get temperature.\r\n");
+    Log.trace("DS18B20Driver: requestTemperatures.\r\n");
     this->_sensors->requestTemperatures();
     
     int countCorrectDevices = 0;
     float value = 0;
-    Log.trace("DS18B20Sensor: get temp from sensors..\r\n");
+    Log.trace("DS18B20Driver: get temp from sensors..\r\n");
 
     for (int i = 0; i < this->_sensors->getDeviceCount(); i++) {
         float temp = this->_sensors->getTempCByIndex(i);
-        Log.trace("DS18B20Sensor: %d sensor: %d\r\n", i, (int)temp);
+        Log.trace("DS18B20Driver: sensor #%d: %F\r\n", i, temp);
 
         if (temp == -85) {
             continue;
@@ -66,14 +68,14 @@ float DS18B20Sensor::getTemperature() {
     }
 
     if (countCorrectDevices > 0) {
-        Log.trace("DS18B20Sensor: Calculate avg value\r\n");
+        Log.trace("DS18B20Driver: Calculate avg value\r\n");
         value /= countCorrectDevices;
     } else {
         return -40.0f;
     }
 
-    Log.trace("DS18B20Sensor: Complete!\r\n");
-    Log.trace("DS18B20Sensor: Temp: %d\r\n", (int)value);
+    Log.trace("DS18B20Driver: Complete!\r\n");
+    Log.trace("DS18B20Driver: Temp: %F\r\n", value);
 
     return value;
 }

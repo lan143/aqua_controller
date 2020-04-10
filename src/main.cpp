@@ -29,6 +29,8 @@
 #include "log/Log.h"
 #include "services/SensorService.h"
 #include "services/HeatingService.h"
+#include "defines.h"
+#include "drivers/PWMRelayDriver.h"
 
 void setup() {
   delay(3000);
@@ -41,7 +43,10 @@ void setup() {
   Log.trace("Serial inited. Start init other...\r\n");
 
   sensorService.init();
-  HeatingService* heatingService = new HeatingService();
+
+  #ifdef HEATING_DRIVER_PWM_RELAY
+    HeatingService* heatingService = new HeatingService(new PWMRelayDriver(PIN_HEATING_RELAY));
+  #endif
   heatingService->init();
 
   Log.trace("Init completed. Running...\r\n");

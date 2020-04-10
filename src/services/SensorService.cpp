@@ -25,7 +25,9 @@
 #include "defines.h"
 #include "SensorService.h"
 #include "sensors/WaterTemperatureSensor.h"
-#include "drivers/DS18B20Sensor.h"
+#ifdef WATER_TEMPERATURE_SENSOR_DS18B20
+    #include "drivers/DS18B20Driver.h"
+#endif
 
 SensorService::SensorService() {
     this->_sensors = new Sensor*[SENSORS_MAX];
@@ -33,9 +35,9 @@ SensorService::SensorService() {
 
 void SensorService::init() {
     #ifdef WATER_TEMPERATURE_SENSOR_DS18B20
-        this->_sensors[WATER_TEMPERATURE_SENSOR] = new WaterTemperatureSensor(new DS18B20Sensor(PIN_WATER_TEMPERATURE_SENSOR));
-        this->_sensors[WATER_TEMPERATURE_SENSOR]->init();
+        this->_sensors[WATER_TEMPERATURE_SENSOR] = new WaterTemperatureSensor(new DS18B20Driver(PIN_WATER_TEMPERATURE_SENSOR));
     #endif
+    this->_sensors[WATER_TEMPERATURE_SENSOR]->init();
 }
 
 Sensor* SensorService::getSensor(Sensors index) {

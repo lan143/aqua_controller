@@ -27,10 +27,11 @@
 
 #include <PID_v1.h>
 #include "tasks/PeriodicTask.h"
+#include "drivers/PWMDriver.h"
 
 class HeatingService : public PeriodicTask {
 public:
-    HeatingService();
+    HeatingService(PWMDriver* driver);
 
     void update();
 private:
@@ -38,6 +39,7 @@ private:
     double _input;
     double _output;
     PID* _pid;
+    PWMDriver* _driver;
 };
 
 #endif

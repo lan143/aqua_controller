@@ -22,11 +22,17 @@
  * SOFTWARE.
  */
 
-#include "WaterTemperatureSensor.h"
-#include "log/Log.h"
+#ifndef H_PRESSURE_DRIVER_H
+#define H_PRESSURE_DRIVER_H
 
-void WaterTemperatureSensor::update() {
-    Log.trace("Update water temperature sensor\r\n");
+class PressureDriver {
+public:
+    PressureDriver(int pin) { this->_pin = pin; };
 
-    this->_value = this->_driver->getTemperature();
-}
+    virtual float getPressure() = 0;
+
+protected:
+    int _pin;
+};
+
+#endif

@@ -22,11 +22,31 @@
  * SOFTWARE.
  */
 
-#include "WaterTemperatureSensor.h"
-#include "log/Log.h"
+#ifndef H_PWM_RELAY_DRIVER_H
+#define H_PWM_RELAY_DRIVER_H
 
-void WaterTemperatureSensor::update() {
-    Log.trace("Update water temperature sensor\r\n");
+#include "PWMDriver.h"
+#include "tasks/PeriodicTask.h"
 
-    this->_value = this->_driver->getTemperature();
-}
+class PWMRelayDriver : public PWMDriver, public PeriodicTask {
+public:
+    PWMRelayDriver(int pin, int period = 255000, bool dir = false) : PWMDriver(pin), PeriodicTask("PWMRelayDriver", 0, period / 255, 2048) {
+        this->_period = period;
+        this->_dir = !dir;
+
+      	pinMode(this->_pin, OUTPUT);
+        digitalWrite(this->_pin, _dir);
+    }
+
+    void update();
+    void setPwm(int pwm);
+
+private:
+    bool _flag = false;
+    int _period;
+    bool _dir = false;
+    int _activePeriod = 0;
+    uint32_t _tmr = 0;
+};
+
+#endif

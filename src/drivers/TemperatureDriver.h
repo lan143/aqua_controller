@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef H_TEMPERATURE_SENSOR_H
-#define H_TEMPERATURE_SENSOR_H
+#ifndef H_TEMPERATURE_DRIVER_H
+#define H_TEMPERATURE_DRIVER_H
 
-class TemperatureSensor {
+class TemperatureDriver {
 public:
-    TemperatureSensor(int pin) { this->_pin = pin; };
+    TemperatureDriver(int pin) { this->_pin = pin; };
 
     virtual float getTemperature() = 0;
 
